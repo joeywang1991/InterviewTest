@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using InterviewTest.Services;
-using InterviewTest.Models;
+using InterviewTest.Repositories;
 using Newtonsoft.Json;
+using InterviewTest.Models;
+using Microsoft.EntityFrameworkCore;
+using InterviewTest.Library;
+using InterviewTest.Models.Table;
 
 
 namespace InterviewTest.Controllers
@@ -12,30 +16,48 @@ namespace InterviewTest.Controllers
     public class CurroncyController : ControllerBase
     {
         private readonly ILogger<CurroncyController> _logger;
+        private readonly CurrentPriceService _currentPriceService;
 
-        public CurroncyController(ILogger<CurroncyController> logger)
+        public CurroncyController(ILogger<CurroncyController> logger, CurrentPriceService currentPriceService)
         {
             _logger = logger;
+            _currentPriceService = currentPriceService;
         }
 
 
         [HttpGet("GetCurroncy")]
-        public IActionResult GetCurroncy()
+        public ActionResult GetCurroncy()
         {
-            string ss = "OK sd4a56sd4a6s54da";
+            DataResult<List<GetCurrencyInfo>> result = _currentPriceService.GetCurrentInfo();
 
-            return Ok(ss);
+            return Ok(result);
         }
 
-        [HttpPost("GetCurrentPrice")]
-        public string GetCurrentPrice(string ss = ":3")
+        [HttpPost("GetCurrentPrice")]        
+        public ActionResult GetCurrentPrice(string currency, int options = 0)
         {
-            CurrentPriceService currentPriceService = new CurrentPriceService();
+            DataResult<List<GetCurrencyInfo>> result = new DataResult<List<GetCurrencyInfo>>();
+            // 取得API結果並更新資料庫
+            var UpdateResult = _currentPriceService.UpdateCurrentPrice(currency);
+            if (UpdateResult.IsSuccess)
+            {
+                return Ok(UpdateResult);
+            }
 
-            var result = currentPriceService.GetCurrentPrice();
+            result = _currentPriceService.GetCurrentInfo();     
 
-            return result.Success ? JsonConvert.SerializeObject(result.Data) : result.ErrorMessage;
+            return Ok(result);
         }
 
+        [HttpPost("DeleteCurrencyData")]
+        public ActionResult DeleteCurrencyData(string currency, int options = 0)
+        { 
+        
+        
+        
+        
+        
+            return Ok(currency); 
+        }
     }
 }

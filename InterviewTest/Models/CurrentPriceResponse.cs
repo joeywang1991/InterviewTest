@@ -25,10 +25,10 @@
 
     public class CurrencyInfo
     {
-        public string code { get; set; }
-        public string symbol { get; set; }
-        public string rate { get; set; }
-        public string description { get; set; }
-        public decimal rate_float { get; set; }
+        public string Code { get; set; }
+        public string Symbol { get; set; }
+        public string Rate { get; set; }
+        public string Description { get; set; }
+        public decimal Rate_float { get; set; }
     }
 }
