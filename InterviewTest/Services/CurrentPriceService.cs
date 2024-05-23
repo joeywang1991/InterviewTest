@@ -5,6 +5,7 @@ using InterviewTest.Repositories;
 using InterviewTest.Library;
 using InterviewTest.Models.Table;
 using System.Collections.Generic;
+using Microsoft.Extensions.Options;
 
 namespace InterviewTest.Services
 {
@@ -21,7 +22,7 @@ namespace InterviewTest.Services
         /// 取得當前幣別價格
         /// </summary>
         /// <returns></returns>
-        public DataResult<CurrentPriceResponse> UpdateCurrentPrice(string currency)
+        public DataResult<CurrentPriceResponse> UpdateCurrentPrice(string currency, bool throwError)
         {
             DataResult<CurrentPriceResponse> result = new DataResult<CurrentPriceResponse>();
             string url = "https://api.coindesk.com/v1/bpi/currentprice.json";
@@ -32,6 +33,9 @@ namespace InterviewTest.Services
 
             try
             {
+                if (throwError)
+                    throw new Exception();
+
                 /// 之後可以用currency擴充呼叫其他貨幣的匯率API
                 var callAPI = client.Execute(request);
                 if (callAPI.IsSuccessful)
@@ -58,16 +62,20 @@ namespace InterviewTest.Services
             }
         }
 
-        public DataResult<List<GetCurrencyInfo>> GetCurrentInfo()
+        public DataResult<List<GetCurrencyInfo>> GetCurrentInfo(string currency = "Bitcoin", string language = "zh-tw", bool throwError = false)
         {
             DataResult<List<GetCurrencyInfo>> result = new DataResult<List<GetCurrencyInfo>>();
 
             try
             {
-                List<GetCurrencyInfo> listCurrencyInfo = _currancyRepository.GetCurrencyInfo();
+                if (throwError)
+                    throw new Exception();
+
+
+                List<GetCurrencyInfo> listCurrencyInfo = _currancyRepository.GetCurrencyInfo(currency, language);
                 if (listCurrencyInfo.Count == 0)
                 {
-                    result.SetError("查無此資料");
+                    result.SetError("查無此資料!");
                 }
                 else
                 {
@@ -76,11 +84,31 @@ namespace InterviewTest.Services
             }
             catch
             {
-                result.SetError("查詢發生錯誤");
+                result.SetError("查詢發生錯誤!");
             }
 
             return result;
         }
 
+        public DataResult DeleteCurrencyData(string currency, bool throwError)
+        {
+            DataResult result = new DataResult();
+
+            try
+            {
+                if (throwError)
+                    throw new Exception();
+
+                _currancyRepository.DeleteCurrencyData(currency);
+                result.SetSuccess();
+            }
+            catch (Exception ex)
+            {
+
+                result.SetError("資料刪除失敗");
+            }
+
+            return result;
+        }
     }
 }

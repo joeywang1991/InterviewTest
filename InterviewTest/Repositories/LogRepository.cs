@@ -19,7 +19,7 @@ namespace InterviewTest.Repositories
         {
             try
             {
-                // 建立輸出參數
+                // 建立輸入參數
                 List<SqlParameter> parameters = new List<SqlParameter>() {
                     new SqlParameter("@LogID", SqlDbType.Int) { Direction = ParameterDirection.Output},
                     new SqlParameter("@RequestHeader", SqlDbType.NVarChar, 512) { Direction = ParameterDirection.Input, Value = model.RequestHeader },

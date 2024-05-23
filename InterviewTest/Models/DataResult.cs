@@ -8,6 +8,7 @@ namespace InterviewTest.Models
 
         public T Data { get; set; }
 
+        //可依照自己要的錯誤碼定義
         public int StatusCode { get; set; }
 
         public string? ErrorMessage { get; set; }
@@ -32,6 +33,8 @@ namespace InterviewTest.Models
         public bool IsSuccess { get; set; }
 
         public string? ErrorMessage { get; set; }
+
+        //可依照自己要的錯誤碼定義
         public int StatusCode { get; set; }
 
 

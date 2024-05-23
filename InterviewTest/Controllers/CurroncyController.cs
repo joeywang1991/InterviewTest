@@ -24,40 +24,57 @@ namespace InterviewTest.Controllers
             _currentPriceService = currentPriceService;
         }
 
-
+        /// <summary>
+        /// 取得 幣別匯率資料
+        /// </summary>
+        /// <param name="currency"></param>
+        /// <param name="language"></param>
+        /// <param name="throwError"></param>
+        /// <returns></returns>
         [HttpGet("GetCurroncy")]
-        public ActionResult GetCurroncy()
+        public ActionResult GetCurroncy(string currency = "Bitcoin", string language = "zh-tw", bool throwError = false)
         {
-            DataResult<List<GetCurrencyInfo>> result = _currentPriceService.GetCurrentInfo();
+            DataResult<List<GetCurrencyInfo>> result = _currentPriceService.GetCurrentInfo(currency, language, throwError);
 
             return Ok(result);
         }
 
-        [HttpPost("GetCurrentPrice")]        
-        public ActionResult GetCurrentPrice(string currency, int options = 0)
+        /// <summary>
+        /// 更新 幣別匯率資料
+        /// </summary>
+        /// <param name="currency"></param>
+        /// <param name="throwError"></param>
+        /// <returns></returns>
+        [HttpPost("UpdateCurrentPrice")]        
+        public ActionResult UpdateCurrentPrice(string currency = "Bitcoin", bool throwError = false)
         {
             DataResult<List<GetCurrencyInfo>> result = new DataResult<List<GetCurrencyInfo>>();
             // 取得API結果並更新資料庫
-            var UpdateResult = _currentPriceService.UpdateCurrentPrice(currency);
+            var UpdateResult = _currentPriceService.UpdateCurrentPrice(currency, throwError);
             if (UpdateResult.IsSuccess)
             {
                 return Ok(UpdateResult);
             }
 
-            result = _currentPriceService.GetCurrentInfo();     
+            result = _currentPriceService.GetCurrentInfo(throwError: throwError);     
 
             return Ok(result);
         }
 
+        /// <summary>
+        /// 刪除 幣別匯率資料
+        /// </summary>
+        /// <param name="currency"></param>
+        /// <param name="throwError"></param>
+        /// <returns></returns>
         [HttpPost("DeleteCurrencyData")]
-        public ActionResult DeleteCurrencyData(string currency, int options = 0)
+        public ActionResult DeleteCurrencyData(string currency, bool throwError = false)
         { 
+            DataResult result = new DataResult();
+
+            result = _currentPriceService.DeleteCurrencyData(currency, throwError);            
         
-        
-        
-        
-        
-            return Ok(currency); 
+            return Ok(result); 
         }
     }
 }
