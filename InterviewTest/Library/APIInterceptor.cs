@@ -2,6 +2,7 @@
 using Azure.Core;
 using InterviewTest.Models;
 using InterviewTest.Repositories;
+using InterviewTest.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,9 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InterviewTest.Services
+namespace InterviewTest.Library
 {
-    public class APIInterceptor :IActionFilter
+    public class APIInterceptor : IActionFilter
     {
         private readonly IServiceProvider _logger;
         public APIInterceptor(IServiceProvider logger)
@@ -28,11 +29,11 @@ namespace InterviewTest.Services
         /// Reqesut Log紀錄時取得的LogID
         /// </summary>
         private long? logID = null;
-        
+
         public void OnActionExecuting(ActionExecutingContext context)
         {
             //取的API的Reqesut資料
-            var requestModel = context.ActionArguments; 
+            var requestModel = context.ActionArguments;
             var requestJson = JsonConvert.SerializeObject(requestModel); // 
             using (var scope = _logger.CreateScope())
             {
@@ -50,7 +51,7 @@ namespace InterviewTest.Services
         public void OnActionExecuted(ActionExecutedContext context)
         {
             //取的API的Reponse資料
-            var responseModel = context.Result as ObjectResult; 
+            var responseModel = context.Result as ObjectResult;
             if (responseModel != null)
             {
                 var responseJson = JsonConvert.SerializeObject(responseModel.Value);

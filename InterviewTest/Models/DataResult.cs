@@ -37,7 +37,6 @@ namespace InterviewTest.Models
         //可依照自己要的錯誤碼定義
         public int StatusCode { get; set; }
 
-
         public void SetSuccess()
         {
             IsSuccess = true;
